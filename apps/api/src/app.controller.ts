@@ -12,7 +12,7 @@ export class AppController {
 
 @Get('health')
 health() {
-  return { status: 'ok' };
+  return { status: 'Very healthy' };
 }
 
 
