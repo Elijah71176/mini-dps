@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: mini_dps_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U app -d mini_dps_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      # CI DB (GitHub Actions service runs on localhost)
+      DATABASE_URL: postgresql://app:app@localhost:5432/mini_dps_test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      # ---------- API ----------
+      - name: API - unit tests
+        run: npm -w apps/api test --if-present
+
+      - name: API - run migrations (for e2e)
+        run: npm -w apps/api run migration:run --if-present
+
+      - name: API - e2e tests
+        run: npx -w apps/api jest -c test/jest-e2e.json
+
+      - name: API - build
+        run: npm -w apps/api run build --if-present
+
+      # ---------- WEB ----------
+      - name: Web - test
+        run: npm -w apps/web test --if-present
+
+      - name: Web - build
+        run: npm -w apps/web run build --if-present
