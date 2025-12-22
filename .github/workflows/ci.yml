@@ -39,25 +39,38 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install deps
+
+            # ---------- API ----------
+      - name: API - install
+        working-directory: apps/api
         run: npm ci
 
-      # ---------- API ----------
       - name: API - unit tests
-        run: npm -w apps/api test --if-present
+        working-directory: apps/api
+        run: npm run test
 
       - name: API - run migrations (for e2e)
-        run: npm -w apps/api run migration:run --if-present
+        working-directory: apps/api
+        run: npm run migration:run
 
       - name: API - e2e tests
-        run: npx -w apps/api jest -c test/jest-e2e.json
+        working-directory: apps/api
+        run: npx jest -c test/jest-e2e.json
 
       - name: API - build
-        run: npm -w apps/api run build --if-present
+        working-directory: apps/api
+        run: npm run build
+
 
       # ---------- WEB ----------
+      - name: Web - install
+        working-directory: apps/web
+        run: npm ci
+
       - name: Web - test
-        run: npm -w apps/web test --if-present
+        working-directory: apps/web
+        run: npm run test
 
       - name: Web - build
-        run: npm -w apps/web run build --if-present
+        working-directory: apps/web
+        run: npm run build
