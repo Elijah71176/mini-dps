@@ -9,6 +9,7 @@ const isProd = process.env.NODE_ENV === 'production';
 export default new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL,
+
     ssl: isProd ? { rejectUnauthorized: false } : false,
 
   entities: [Customer, Project],
