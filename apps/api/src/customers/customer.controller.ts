@@ -35,6 +35,5 @@ export class CustomerController {
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
     await this.customers.remove(id);
   }
-
   
 }

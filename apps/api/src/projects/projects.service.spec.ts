@@ -71,10 +71,10 @@ describe('ProjectsService (unit)', () => {
     mockProjectRepo.create.mockReturnValue(createdProject);
     mockProjectRepo.save.mockResolvedValue(savedProject);
 
-    // Act
+    // act
     const result = await service.create(dto as any);
 
-    // Assert
+    // Assert, expectations
     expect(customerRepo.findOne).toHaveBeenCalledWith({
       where: { id: dto.customerId },
     });

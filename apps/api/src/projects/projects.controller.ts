@@ -14,7 +14,7 @@ export class ProjectsController {
     return this.projects.findAll();
   }
 
-  // ✅ MUST come before :id
+  // MUST come before :id
   @Get('by-customer/:customerId')
   findByCustomer(
     @Param('customerId', new ParseUUIDPipe()) customerId: string,

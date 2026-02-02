@@ -51,7 +51,7 @@ async function seed() {
   ]);
 
   await ds.destroy();
-  console.log('✅ Seed done');
+  console.log(' Seed done');
 }
 
 seed().catch((error) => {

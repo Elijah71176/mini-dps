@@ -11,7 +11,7 @@ import { ProjectsModule } from './projects/projects.module';
       type: 'postgres',
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      synchronize: false, //keep false (shld use in migration)
+      synchronize: false, //(shld use in migration)
     
 
     }),
