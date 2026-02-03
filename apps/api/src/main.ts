@@ -9,6 +9,7 @@ async function bootstrap() {
   app.enableCors({ 
     origin: [
       'http://localhost:3000', 
+      'https://mini-dps.vercel.app', // Add your actual production link here
       /\.vercel\.app$/ 
     ],
     credentials: true 
