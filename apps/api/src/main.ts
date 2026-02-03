@@ -5,7 +5,14 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({ origin: 'http://localhost:3000' });
+  // Updated CORS to allow both Local and Vercel
+  app.enableCors({ 
+    origin: [
+      'http://localhost:3000', 
+      /\.vercel\.app$/ 
+    ],
+    credentials: true 
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -15,7 +22,11 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3001);
+  // Use 0.0.0.0 for Docker and Cloud compatibility
+  const port = process.env.PORT ?? 3001;
+  await app.listen(port, '0.0.0.0');
+  
+  console.log(`Application is running on: http://localhost:${port}`);
 }
 
 bootstrap();

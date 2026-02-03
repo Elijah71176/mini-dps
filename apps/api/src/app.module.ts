@@ -10,14 +10,13 @@ import { ProjectsModule } from './projects/projects.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
+      // Change this line:
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
       autoLoadEntities: true,
-      synchronize: false, //(shld use in migration)
-    
-
+      synchronize: true, // Turn this to true for now so Docker creates your tables automatically
     }),
-CustomerModule,
-ProjectsModule,
+    CustomerModule,
+    ProjectsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
