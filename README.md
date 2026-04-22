@@ -1,121 +1,228 @@
 ## Mini-DPS
 
-Mini-DPS is a small full-stack project built to practice backend, frontend, testing, and CI/CD concepts.
+Mini-DPS is a full-stack cloud application demonstrating modern software development practices including backend APIs, frontend UI, testing, CI, and AWS deployment.
 
-The project demonstrates how a real application is structured, tested, and automated using modern tools.
+The project showcases how a real-world system is built, containerized, deployed to AWS, and validated through automated pipelines.
 
-## Features
-NestJS backend (API)
-Next.js frontend (Web)
-PostgreSQL database
-Automated unit and end-to-end tests
-GitHub Actions CI pipeline
+---
 
-## Tech Stack
-Backend
-NestJS
-TypeORM
-PostgreSQL
-Jest (unit tests and e2e tests)
+##  Features
 
-Frontend
-Next.js
-React
-Jest + Testing Library
+* NestJS backend (REST API)
+* Next.js frontend (static export)
+* PostgreSQL database (AWS RDS)
+* Dockerized backend deployment (AWS EC2)
+* Static frontend hosting (AWS S3)
+* Automated testing (unit + e2e)
+* GitHub Actions CI pipeline
 
- DevOps
-Docker
-Docker Compose
-GitHub Actions (CI)
+---
 
- ## Project Structure
+##  Architecture
 
+```
+Frontend (S3 Static Hosting)
+        ↓
+Backend API (EC2 + Docker)
+        ↓
+Database (AWS RDS PostgreSQL)
+```
+
+* Frontend is deployed as static files on **Amazon S3**
+* Backend runs inside a Docker container on **Amazon EC2**
+* Database is managed by **Amazon RDS**
+* CI is handled by **GitHub Actions**
+
+---
+
+##  Tech Stack
+
+### Backend
+
+* NestJS
+* TypeORM
+* PostgreSQL
+* Jest (unit & e2e)
+
+### Frontend
+
+* Next.js (static export)
+* React
+* Jest + Testing Library
+
+### DevOps & Cloud
+
+* Docker
+* AWS EC2
+* AWS S3
+* AWS RDS
+* GitHub Actions (CI)
+
+---
+
+##  Project Structure
+
+```
 mini-dps
-apps
- api  (NestJS backend)
- web  (Next.js frontend)
-infra  (Docker Compose: DB + API + Web)
-.github
- workflows (CI pipeline)
+ ┣ apps
+ ┃ ┣ api      (NestJS backend)
+ ┃ ┗ web      (Next.js frontend)
+ ┣ infra      (Docker Compose for local dev)
+ ┗ .github
+   ┗ workflows (CI pipeline)
+```
 
-## Run the Application (DEV)
+---
 
-Start the full system (database, backend, frontend) using Docker Compose.
+##  Run Locally (Development)
 
-Commands:
+### Option 1 — Docker (recommended)
+
+```bash
 cd infra
 docker compose up -d
+```
+
+Check services:
+
+```bash
 docker compose ps
+```
 
-Open in browser:
-Frontend: http://localhost:3000
-Backend health check: http://localhost:3001/health
+Access:
 
-## Databases and Environments
+* Frontend: http://localhost:3000
+* Backend: http://localhost:3001/health
 
-This project uses two separate databases.
+---
 
-DEV database
-Database name: mini_dps
-Used when running the application normally
-Contains demo data (customers and projects)
-Used for development and presentation
+### Option 2 — Without Docker
 
-TEST database
-Database name: mini_dps_test
-Used only for automated end-to-end tests
-Data is reset between test runs
+Backend:
 
-This separation ensures that automated tests never delete or affect real development data.
-
-## Database Migrations (TypeORM)
-
-Database schema is managed using TypeORM migrations.
-Migrations ensure the database structure can be recreated on any machine.
-
-## Run migrations for DEV database:
+```bash
 cd apps/api
-DATABASE_URL=postgresql://app:app@localhost:5432/mini_dps npm run migration:run
+npm install
+npm run start:dev
+```
 
-## Run migrations for TEST database:
-cd apps/api
-DATABASE_URL=postgresql://app:app@localhost:5433/mini_dps_test npm run migration:run
+Frontend:
 
-If the message says “No migrations are pending”, the schema is already up to date.
+```bash
+cd apps/web
+npm install
+npm run dev
+```
 
-## Running Tests
-Backend unit tests
-These test business logic without needing the full system.
+---
+
+##  Environment Variables
+
+Example `.env` for local development:
+
+```env
+DATABASE_URL=postgresql://app:app@localhost:5432/mini_dps
+PORT=3001
+NODE_ENV=development
+```
+
+---
+
+##  Running Tests
+
+### Backend unit tests
+
+```bash
 cd apps/api
 npm run test
+```
 
-Backend end-to-end tests (real database)
-These tests run against the TEST database only.
+### Backend e2e tests
+
+```bash
 cd apps/api
-DATABASE_URL=postgresql://app:app@localhost:5433/mini_dps_test npx jest -c test/jest-e2e.json
+DATABASE_URL=postgresql://app:app@localhost:5432/mini_dps npx jest -c test/jest-e2e.json
+```
 
-Frontend tests
-These verify that the frontend renders correctly.
+### Frontend tests
 
+```bash
 cd apps/web
 npm run test
+```
 
-## CI Pipeline (GitHub Actions)
+---
 
-On every push to the main branch, GitHub Actions automatically:
-Starts a PostgreSQL service
-Runs backend unit tests
-Runs backend e2e tests with migrations
-Runs frontend tests
-Builds both backend and frontend applications
-A green CI status means the project works on a clean machine and is safe to merge or submit.
-Release
+##  CI Pipeline (GitHub Actions)
 
-The current stable version of the project is tagged as:
+On every push to `main`, CI automatically:
+
+* Starts PostgreSQL service
+* Runs backend unit tests
+* Runs backend e2e tests
+* Runs frontend tests
+* Builds backend and frontend
+
+✔️ CI status must be green before deployment
+
+---
+
+##  Production Deployment (AWS)
+
+### Frontend
+
+* Hosted on **Amazon S3 (Static Website Hosting)**
+* Built using Next.js static export (`output: 'export'`)
+* Publicly accessible via S3 website endpoint
+
+### Backend
+
+* Deployed on **Amazon EC2**
+* Runs inside a **Docker container**
+* Exposes API on port `3001`
+
+### Database
+
+* Hosted on **Amazon RDS (PostgreSQL)**
+* Secure connection from EC2 backend
+
+---
+
+## 🌐 Live Endpoints
+
+Frontend:
+
+```
+http://mini-dps-frontend-elijah.s3-website.eu-north-1.amazonaws.com/
+```
+
+Backend API:
+
+```
+http://13.60.17.29:3001
+```
+
+---
+
+##  Notes
+
+* CORS is configured to allow S3 frontend to communicate with EC2 backend
+* Dynamic routes were removed to support static hosting on S3
+* SSL is enabled only in production (RDS), disabled in CI/test
+
+---
+
+##  Release
+
+Current stable version:
+
+```
 v1.0
+```
 
-This tag represents the current submission state of the project.
+---
 
-Author
-Built by Elijah
-AWS / Backend / DevOps student
+##  Author
+
+Elijah
+AWS Cloud Developer Student
