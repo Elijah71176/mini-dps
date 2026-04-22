@@ -10,7 +10,11 @@ import { ProjectsModule } from './projects/projects.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      ssl: process.env.NODE_ENV === 'production'
+        ? {
+            rejectUnauthorized: false,
+          }
+        : false,
       autoLoadEntities: true,
       synchronize: true,
     }),
