@@ -22,7 +22,7 @@ async function bootstrap() {
     'http://localhost:3000',
     'https://mini-dps.vercel.app',
     /\.vercel\.app$/,
-    'http://mini-dps-frontend-elijah.s3-website-eu-north-1.amazonaws.com'
+    'http://mini-dps-frontend-elijah.s3-website.eu-north-1.amazonaws.com',
     ],
     credentials: true,
   });
