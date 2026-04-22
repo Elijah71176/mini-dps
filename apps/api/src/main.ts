@@ -1,18 +1,30 @@
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '../../.env' });
+
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  // Updated CORS to allow both Local and Vercel
-  app.enableCors({ 
+// Enable CORS for the specified origins
+/*
+  app.enableCors({
     origin: [
-      'http://localhost:3000', 
-      'https://mini-dps.vercel.app', // Add your actual production link here
-      /\.vercel\.app$/ 
+      'http://localhost:3000',
+      'https://mini-dps.vercel.app',
+      /\.vercel\.app$/,
+
+      */
+
+      app.enableCors({
+  origin: [
+    'http://localhost:3000',
+    'https://mini-dps.vercel.app',
+    /\.vercel\.app$/,
+    'http://mini-dps-frontend-elijah.s3-website-eu-north-1.amazonaws.com'
     ],
-    credentials: true 
+    credentials: true,
   });
 
   app.useGlobalPipes(
@@ -23,11 +35,11 @@ async function bootstrap() {
     }),
   );
 
-  // Use 0.0.0.0 for Docker and Cloud compatibility
   const port = process.env.PORT ?? 3001;
   await app.listen(port, '0.0.0.0');
-  
+
   console.log(`Application is running on: http://localhost:${port}`);
+  console.log('DATABASE_URL loaded:', process.env.DATABASE_URL);
 }
 
 bootstrap();

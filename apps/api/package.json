@@ -21,11 +21,10 @@
     "migration:generate": "typeorm-ts-node-commonjs -d src/typeorm.config.ts migration:generate",
     "migration:run": "typeorm-ts-node-commonjs -d src/typeorm.config.ts migration:run",
     "seed": "ts-node src/seed.ts"
-  
-
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
@@ -71,11 +70,11 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
-    },    
+    },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-}
+  }
 }
