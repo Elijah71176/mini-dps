@@ -91,6 +91,22 @@ NEXT_PUBLIC_API_URL=http://13.60.17.29
 DATABASE_URL=postgresql://app:******@rds-endpoint:5432/mini_dps  
 PORT=3001
 
+
+
+## CI/CD (GitHub Actions)
+
+This project uses GitHub Actions for Continuous Integration.
+
+Every time code is pushed to the repository:
+
+- Dependencies are installed
+- The project is built
+- Errors are detected early
+
+CI status: ✅ Passing
+
+This ensures code quality and stability before deployment.
+
 ## Author
 
 Bamidele Mayowa A. Elijah
