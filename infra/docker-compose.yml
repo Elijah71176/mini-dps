@@ -4,7 +4,7 @@ services:
     image: postgres:15
     environment:
       POSTGRES_USER: app
-      POSTGRES_PASSWORD: app
+      POSTGRES_PASSWORD: appuser01
       POSTGRES_DB: mini_dps
     ports:
       - "5432:5432"
@@ -22,7 +22,7 @@ services:
     image: postgres:15
     environment:
       POSTGRES_USER: app
-      POSTGRES_PASSWORD: app
+      POSTGRES_PASSWORD: appuser01
       POSTGRES_DB: mini_dps_test
     ports:
       - "5433:5432"

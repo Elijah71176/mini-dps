@@ -7,24 +7,10 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-// Enable CORS for the specified origins
-/*
+
+  // ✅ ONLY THIS (remove the other one)
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://mini-dps.vercel.app',
-      /\.vercel\.app$/,
-
-      */
-
-      app.enableCors({
-  origin: [
-    'http://localhost:3000',
-    'https://mini-dps.vercel.app',
-    /\.vercel\.app$/,
-    'http://mini-dps-frontend-elijah.s3-website.eu-north-1.amazonaws.com',
-    ],
-    credentials: true,
+    origin: '*',
   });
 
   app.useGlobalPipes(
