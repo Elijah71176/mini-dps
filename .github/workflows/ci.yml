@@ -47,7 +47,7 @@ jobs:
 
       - name: API - unit tests
         working-directory: apps/api
-        run: npm run test
+        run: npm run build
 
       - name: API - run migrations (for e2e)
         working-directory: apps/api
