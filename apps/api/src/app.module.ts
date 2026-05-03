@@ -4,22 +4,28 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CustomerModule } from './customers/customer.module';
 import { ProjectsModule } from './projects/projects.module';
+import { RequestModule } from './request/request.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      ssl: process.env.NODE_ENV === 'production'
-        ? {
-            rejectUnauthorized: false,
-          }
-        : false,
+
+      // SSL Need to check AWS RDS
+      extra: {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      },
+
       autoLoadEntities: true,
       synchronize: true,
     }),
+
     CustomerModule,
     ProjectsModule,
+    RequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],
