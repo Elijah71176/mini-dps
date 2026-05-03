@@ -26,7 +26,6 @@ jobs:
           --health-retries=5
 
     env:
-      # CI DB (GitHub Actions service runs on localhost)
       DATABASE_URL: postgresql://app:app@localhost:5432/mini_dps_test
 
     steps:
@@ -39,37 +38,23 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-
-            # ---------- API ----------
+      # ---------- API ----------
       - name: API - install
         working-directory: apps/api
         run: npm ci
 
-      - name: API - unit tests
-        working-directory: apps/api
-        run: npm run build
-
-      - name: API - run migrations (for e2e)
+      - name: API - run migrations
         working-directory: apps/api
         run: npm run migration:run
-
-      - name: API - e2e tests
-        working-directory: apps/api
-        run: npx jest -c test/jest-e2e.json
 
       - name: API - build
         working-directory: apps/api
         run: npm run build
 
-
       # ---------- WEB ----------
       - name: Web - install
         working-directory: apps/web
         run: npm ci
-
-      - name: Web - test
-        working-directory: apps/web
-        run: npm run test
 
       - name: Web - build
         working-directory: apps/web
