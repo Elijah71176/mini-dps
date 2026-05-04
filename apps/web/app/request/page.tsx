@@ -27,7 +27,8 @@ export default function RequestPage() {
   setStatus("");
 
   try {
-    const res = await fetch("http://localhost:3001/request", {
+    //const res = await fetch("http://localhost:3001/request", 
+    const res = await fetch("http://13.60.17.29/request", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
