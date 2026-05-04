@@ -1,229 +1,98 @@
-'use client';
-
-import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
-
-type Project = {
-  id: string;
-  title: string;
-  status: 'planned' | 'active' | 'done';
-  customerId: string;
-};
-
-type Customer = {
-  id: string;
-  name: string;
-  email: string;
-};
-
-const styles = {
-  page: { padding: 24, maxWidth: 1100, margin: '0 auto' } as const,
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-    marginBottom: 16,
-  } as const,
-  h1: { margin: 0, fontSize: 28, fontWeight: 800 } as const,
-  card: {
-    border: '1px solid #e5e7eb',
-    borderRadius: 12,
-    padding: 16,
-    background: 'white',
-  } as const,
-  topRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 12,
-  } as const,
-  buttonLink: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '8px 12px',
-    borderRadius: 10,
-    border: '1px solid #e5e7eb',
-    textDecoration: 'none',
-    fontWeight: 700,
-  } as const,
-  smallMuted: { color: '#6b7280', fontSize: 13 } as const,
-  tableWrap: { overflowX: 'auto' } as const,
-  table: { width: '100%', borderCollapse: 'collapse' } as const,
-  th: {
-    textAlign: 'left',
-    padding: 10,
-    borderBottom: '1px solid #e5e7eb',
-    fontWeight: 800,
-    fontSize: 13,
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
-    color: '#374151',
-  } as const,
-  td: { padding: 10, borderBottom: '1px solid #f1f5f9', verticalAlign: 'top' } as const,
-  badge: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    padding: '4px 10px',
-    borderRadius: 999,
-    border: '1px solid #e5e7eb',
-    fontWeight: 800,
-    fontSize: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
-  } as const,
-  actions: { display: 'flex', gap: 10, alignItems: 'center' } as const,
-  actionLink: { fontWeight: 800, textDecoration: 'none' } as const,
-  dangerBtn: {
-    border: '1px solid #e5e7eb',
-    borderRadius: 10,
-    padding: '6px 10px',
-    background: 'white',
-    fontWeight: 800,
-    cursor: 'pointer',
-  } as const,
-};
+const projects = [
+  {
+    title: "Mini-DPS Client Portal",
+    status: "Deployed",
+    description:
+      "A cloud-based client service platform with request form, backend API, CI/CD and AWS deployment.",
+    stack: ["Next.js", "NestJS", "PostgreSQL", "Docker", "AWS EC2", "AWS S3"],
+    link: "/request",
+  },
+  {
+    title: "Backend API",
+    status: "Completed",
+    description:
+      "NestJS backend running on EC2 with REST API endpoints for requests, customers and projects.",
+    stack: ["NestJS", "Docker", "PostgreSQL", "EC2"],
+    link: "http://13.60.17.29/health",
+  },
+  {
+    title: "Frontend Deployment",
+    status: "Completed",
+    description:
+      "Next.js frontend exported as static files and deployed to AWS S3 using GitHub Actions.",
+    stack: ["Next.js", "GitHub Actions", "AWS S3"],
+    link: "http://mini-dps-frontend-elijah.s3-website.eu-north-1.amazonaws.com/",
+  },
+];
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://13.60.17.29';
-
-  useEffect(() => {
-    async function load() {
-      setError(null);
-      setLoading(true);
-      try {
-        const [pRes, cRes] = await Promise.all([
-          fetch(`${API_URL}/projects`),
-          fetch(`${API_URL}/customers`),
-        ]);
-
-        if (!pRes.ok) throw new Error(await pRes.text());
-        if (!cRes.ok) throw new Error(await cRes.text());
-
-        const pData = (await pRes.json()) as Project[];
-        const cData = (await cRes.json()) as Customer[];
-
-        setProjects(pData);
-        setCustomers(cData);
-      } catch (e: any) {
-        setError(e?.message || 'Failed to load data');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    load();
-  }, [API_URL]);
-
-  const customerMap = useMemo(() => new Map(customers.map((c) => [c.id, c])), [customers]);
-
-  async function deleteProject(id: string) {
-    const ok = confirm('Delete this project?');
-    if (!ok) return;
-
-    const res = await fetch(`${API_URL}/projects/${id}`, { method: 'DELETE' });
-    if (!res.ok && res.status !== 204) {
-      alert('Delete failed');
-      return;
-    }
-
-    setProjects((prev) => prev.filter((p) => p.id !== id));
-  }
-
   return (
-    <main style={styles.page}>
-      <div style={styles.header}>
-        <h1 style={styles.h1}>Projects</h1>
-        <Link href="/projects/new" style={styles.buttonLink}>
-          + New Project
-        </Link>
-      </div>
+    <main style={{ minHeight: "100vh", background: "#f8fafc", padding: "40px 24px" }}>
+      <section style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <p style={{ color: "#2563eb", fontWeight: 800 }}>Portfolio</p>
+        <h1 style={{ fontSize: 40, margin: "8px 0" }}>Projects</h1>
+        <p style={{ color: "#64748b", maxWidth: 720 }}>
+          A public overview of my cloud development and DevOps projects.
+        </p>
 
-      <div style={styles.card}>
-        <div style={styles.topRow}>
-          <div>
-            <div style={{ fontWeight: 800 }}>Dashboard</div>
-            <div style={styles.smallMuted}>View, edit and delete projects</div>
-          </div>
-          <div style={styles.smallMuted}>
-            API: <b>{API_URL}</b>
-          </div>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: 20,
+          marginTop: 30,
+        }}>
+          {projects.map((project) => (
+            <article key={project.title} style={{
+              background: "white",
+              border: "1px solid #e2e8f0",
+              borderRadius: 18,
+              padding: 22,
+              boxShadow: "0 10px 30px rgba(15,23,42,0.08)",
+            }}>
+              <span style={{
+                display: "inline-block",
+                background: "#dcfce7",
+                color: "#166534",
+                padding: "5px 11px",
+                borderRadius: 999,
+                fontWeight: 800,
+                fontSize: 12,
+                marginBottom: 14,
+              }}>
+                {project.status}
+              </span>
+
+              <h2 style={{ margin: "0 0 10px", fontSize: 24 }}>{project.title}</h2>
+              <p style={{ color: "#64748b", lineHeight: 1.6 }}>{project.description}</p>
+
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
+                {project.stack.map((tech) => (
+                  <span key={tech} style={{
+                    background: "#eff6ff",
+                    color: "#1d4ed8",
+                    padding: "6px 10px",
+                    borderRadius: 999,
+                    fontSize: 13,
+                    fontWeight: 700,
+                  }}>
+                    {tech}
+                  </span>
+                ))}
+              </div>
+
+              <a href={project.link} style={{
+                display: "inline-block",
+                marginTop: 18,
+                color: "#2563eb",
+                fontWeight: 800,
+                textDecoration: "none",
+              }}>
+                View project →
+              </a>
+            </article>
+          ))}
         </div>
-
-        {loading && <div>Loading…</div>}
-
-        {!loading && error && (
-          <div style={{ color: 'crimson', fontWeight: 800 }}>
-            {error}
-          </div>
-        )}
-
-        {!loading && !error && (
-          <div style={styles.tableWrap}>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Title</th>
-                  <th style={styles.th}>Status</th>
-                  <th style={styles.th}>Customer</th>
-                  <th style={{ ...styles.th, textAlign: 'right' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map((p) => {
-                  const c = customerMap.get(p.customerId);
-                  const customerLabel = c ? `${c.name} (${c.email})` : p.customerId;
-
-                  return (
-                    <tr key={p.id}>
-                      <td style={styles.td}>
-                        <div style={{ fontWeight: 800 }}>{p.title}</div>
-                        <div style={styles.smallMuted}>{p.id}</div>
-                      </td>
-                      <td style={styles.td}>
-                        <span style={styles.badge}>{p.status}</span>
-                      </td>
-                      <td style={styles.td}>
-                        <div style={{ fontWeight: 800 }}>{customerLabel}</div>
-                      </td>
-                      <td style={{ ...styles.td, textAlign: 'right' }}>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                          <div style={styles.actions}>
-                            <Link href={`/projects/${p.id}/edit`} style={styles.actionLink}>
-                              Edit
-                            </Link>
-                            <button style={styles.dangerBtn} onClick={() => deleteProject(p.id)}>
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-
-                {projects.length === 0 && (
-                  <tr>
-                    <td colSpan={4} style={styles.td}>
-                      <div style={{ fontWeight: 800 }}>No projects yet.</div>
-                      <div style={styles.smallMuted}>
-                        Click <b>New Project</b> to create one.
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      </section>
     </main>
   );
 }
