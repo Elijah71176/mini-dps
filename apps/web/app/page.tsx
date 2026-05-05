@@ -1,47 +1,148 @@
-'use client';
+import Link from "next/link";
 
-import { useEffect, useState } from 'react';
-
-export default function Home() {
-  const [result, setResult] = useState<string>('(not called yet)');
-  const [loading, setLoading] = useState(false);
-  const [clicks, setClicks] = useState(0);
-
-
-useEffect(() => {
-  console.log(' Page hydrated (client JS running)');
-}, []);
-
-
-  const callHealth = async () => {
-    console.log(' Button clicked');
-    setClicks((c) => c + 1);
-
-    try {
-      setLoading(true);
-      const base = process.env.NEXT_PUBLIC_API_URL || '';
-      console.log('Base URL:', base);
-
-      const res = await fetch(`${base}/health`);
-      const data = await res.json();
-      setResult(JSON.stringify(data));
-    } catch (e: any) {
-      console.error(e);
-      setResult(`Error: ${e?.message ?? e}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function HomePage() {
   return (
-    <main style={{ padding: 24 }}>
-      <h1>Mini-DPS Web</h1>
-      <p>Clicks: {clicks}</p>
-      <p>API health result: {result}</p>
-      <button onClick={callHealth}>
-        {loading ? 'Calling...' : 'Call /health'}
-      </button>
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "#f8fafc",
+        padding: "56px 24px",
+      }}
+    >
+      <section style={{ maxWidth: 1180, margin: "0 auto" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: 40,
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <p style={{ color: "#2563eb", fontWeight: 900 }}>
+              Mini-DPS Client Portal
+            </p>
+
+            <h1
+              style={{
+                fontSize: 52,
+                lineHeight: 1.05,
+                margin: "10px 0 18px",
+                color: "#0f172a",
+              }}
+            >
+              Cloud-based service request and project management platform.
+            </h1>
+
+            <p
+              style={{
+                fontSize: 19,
+                lineHeight: 1.7,
+                color: "#475569",
+                maxWidth: 640,
+              }}
+            >
+              Mini-DPS is a portfolio and client portal built with Next.js,
+              NestJS, PostgreSQL, Docker, AWS EC2, AWS S3 and GitHub Actions.
+              It allows users to request services while an admin can manage
+              projects and track progress.
+            </p>
+
+            <div style={{ display: "flex", gap: 14, marginTop: 28, flexWrap: "wrap" }}>
+              <Link
+                href="/request"
+                style={{
+                  background: "#2563eb",
+                  color: "white",
+                  padding: "13px 18px",
+                  borderRadius: 12,
+                  textDecoration: "none",
+                  fontWeight: 900,
+                }}
+              >
+                Request a Service
+              </Link>
+
+              <Link
+                href="/projects"
+                style={{
+                  background: "white",
+                  color: "#0f172a",
+                  padding: "13px 18px",
+                  borderRadius: 12,
+                  textDecoration: "none",
+                  fontWeight: 900,
+                  border: "1px solid #e2e8f0",
+                }}
+              >
+                View Projects
+              </Link>
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: "white",
+              border: "1px solid #e2e8f0",
+              borderRadius: 24,
+              padding: 28,
+              boxShadow: "0 20px 50px rgba(15,23,42,0.10)",
+            }}
+          >
+            <h2 style={{ marginTop: 0 }}>Platform Features</h2>
+
+            {[
+              "Public portfolio project page",
+              "Service request form connected to backend",
+              "Admin project dashboard with CRUD",
+              "CI/CD deployment using GitHub Actions",
+              "Frontend hosted on AWS S3",
+              "Backend running on AWS EC2 with Docker",
+            ].map((item) => (
+              <div
+                key={item}
+                style={{
+                  padding: "12px 0",
+                  borderBottom: "1px solid #f1f5f9",
+                  color: "#334155",
+                  fontWeight: 700,
+                }}
+              >
+                ✓ {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 18,
+            marginTop: 50,
+          }}
+        >
+          {[
+            ["Frontend", "Next.js static export deployed to AWS S3"],
+            ["Backend", "NestJS API running in Docker on AWS EC2"],
+            ["Database", "PostgreSQL for requests, customers and projects"],
+            ["DevOps", "GitHub Actions pipeline for CI/CD deployment"],
+          ].map(([title, text]) => (
+            <article
+              key={title}
+              style={{
+                background: "white",
+                border: "1px solid #e2e8f0",
+                borderRadius: 18,
+                padding: 22,
+              }}
+            >
+              <h3 style={{ marginTop: 0 }}>{title}</h3>
+              <p style={{ color: "#64748b", lineHeight: 1.6 }}>{text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
-
