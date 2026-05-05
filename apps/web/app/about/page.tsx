@@ -38,7 +38,7 @@ export default function AboutPage() {
               ["Database", "PostgreSQL"],
               ["Cloud", "AWS (EC2, S3)"],
               ["DevOps", "Docker, GitHub Actions, CI/CD"],
-              ["Tools", "Git, Linux (WSL), VS Code"],
+              ["Tools", "Git, Linux (WSL), VS Code, intellij idea"],
             ].map(([title, value]) => (
               <div key={title} style={card}>
                 <strong>{title}</strong>

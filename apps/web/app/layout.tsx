@@ -57,6 +57,7 @@ export default function RootLayout({
 
           <div style={{ display: "flex", gap: 18 }}>
             <Link href="/" style={linkStyle}>Home</Link>
+              <Link href="/about" style={linkStyle}>About</Link>
             <Link href="/projects" style={linkStyle}>Projects</Link>
             <Link href="/request" style={linkStyle}>Request</Link>
             <Link href="/contact" style={linkStyle}>Contact</Link>
