@@ -266,7 +266,7 @@ export default function ProjectsPage() {
                           }}
                         >
                           <Link
-                            href={`/projects/edit?id=${p.id}`}
+                            href={`/admin/projects/edit?id=${p.id}`}
                             style={{
                               fontWeight: 800,
                               textDecoration: 'none',

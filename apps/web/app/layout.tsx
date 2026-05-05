@@ -56,16 +56,17 @@ export default function RootLayout({
           </Link>
 
           <div style={{ display: "flex", gap: 18 }}>
-            <Link href="/" style={linkStyle}>Home</Link>
-              <Link href="/about" style={linkStyle}>About</Link>
-            <Link href="/projects" style={linkStyle}>Projects</Link>
-            <Link href="/request" style={linkStyle}>Request</Link>
-            <Link href="/contact" style={linkStyle}>Contact</Link>
-            <Link href="/services" style={linkStyle}>Services</Link>
-            <Link href="/admin/projects" style={{ ...linkStyle, color: "#2563eb" }}>
-              Admin
-            </Link>
-          </div>
+  <Link href="/" style={linkStyle}>Home</Link>
+  <Link href="/about" style={linkStyle}>About</Link>
+  <Link href="/projects" style={linkStyle}>Projects</Link>
+  <Link href="/services" style={linkStyle}>Services</Link>
+  <Link href="/request" style={linkStyle}>Request</Link>
+  <Link href="/contact" style={linkStyle}>Contact</Link>
+
+  <Link href="/admin/projects" style={{ ...linkStyle, color: "#2563eb" }}>
+    Admin
+  </Link>
+</div>
         </nav>
 
         {/* PAGE CONTENT */}
