@@ -61,6 +61,7 @@ export default function RootLayout({
             <Link href="/projects" style={linkStyle}>Projects</Link>
             <Link href="/request" style={linkStyle}>Request</Link>
             <Link href="/contact" style={linkStyle}>Contact</Link>
+            <Link href="/services" style={linkStyle}>Services</Link>
             <Link href="/admin/projects" style={{ ...linkStyle, color: "#2563eb" }}>
               Admin
             </Link>
