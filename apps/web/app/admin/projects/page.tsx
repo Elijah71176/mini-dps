@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 type Project = {
@@ -20,22 +21,51 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://13.60.17.29';
 
 function statusStyle(status: Project['status']) {
   if (status === 'done') {
-    return { background: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0' };
+    return {
+      background: '#dcfce7',
+      color: '#166534',
+      border: '1px solid #bbf7d0',
+    };
   }
 
   if (status === 'active') {
-    return { background: '#dbeafe', color: '#1d4ed8', border: '1px solid #bfdbfe' };
+    return {
+      background: '#dbeafe',
+      color: '#1d4ed8',
+      border: '1px solid #bfdbfe',
+    };
   }
 
-  return { background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a' };
+  return {
+    background: '#fef3c7',
+    color: '#92400e',
+    border: '1px solid #fde68a',
+  };
 }
 
 export default function ProjectsPage() {
+  const router = useRouter();
+
+  const [authorized, setAuthorized] = useState(false);
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // ADMIN AUTH CHECK
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('mini-dps-admin');
+
+    if (isAdmin !== 'true') {
+      router.push('/admin/login');
+      return;
+    }
+
+    setAuthorized(true);
+  }, [router]);
+
+  // LOAD DATA
   useEffect(() => {
     async function load() {
       setError(null);
@@ -59,8 +89,10 @@ export default function ProjectsPage() {
       }
     }
 
-    load();
-  }, []);
+    if (authorized) {
+      load();
+    }
+  }, [authorized]);
 
   const customerMap = useMemo(
     () => new Map(customers.map((c) => [c.id, c])),
@@ -78,7 +110,9 @@ export default function ProjectsPage() {
     const ok = confirm('Delete this project?');
     if (!ok) return;
 
-    const res = await fetch(`${API_URL}/projects/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${API_URL}/projects/${id}`, {
+      method: 'DELETE',
+    });
 
     if (!res.ok && res.status !== 204) {
       alert('Delete failed');
@@ -86,6 +120,14 @@ export default function ProjectsPage() {
     }
 
     setProjects((prev) => prev.filter((p) => p.id !== id));
+  }
+
+  if (!authorized) {
+    return (
+      <main style={{ padding: 24 }}>
+        Checking admin access...
+      </main>
+    );
   }
 
   return (
@@ -104,33 +146,55 @@ export default function ProjectsPage() {
             alignItems: 'center',
             gap: 16,
             marginBottom: 28,
+            flexWrap: 'wrap',
           }}
         >
           <div>
             <p style={{ margin: 0, color: '#2563eb', fontWeight: 800 }}>
               Mini-DPS Client Portal
             </p>
+
             <h1 style={{ margin: '6px 0', fontSize: 38 }}>
               Project Dashboard
             </h1>
+
             <p style={{ margin: 0, color: '#64748b' }}>
               View, manage and track customer projects.
             </p>
           </div>
 
-          <Link
-            href="/projects/new"
-            style={{
-              background: '#0f172a',
-              color: 'white',
-              padding: '12px 16px',
-              borderRadius: 12,
-              textDecoration: 'none',
-              fontWeight: 800,
-            }}
-          >
-            + New Project
-          </Link>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Link
+              href="/projects/new"
+              style={{
+                background: '#0f172a',
+                color: 'white',
+                padding: '12px 16px',
+                borderRadius: 12,
+                textDecoration: 'none',
+                fontWeight: 800,
+              }}
+            >
+              + New Project
+            </Link>
+
+            <button
+              onClick={() => {
+                localStorage.removeItem('mini-dps-admin');
+                router.push('/admin/login');
+              }}
+              style={{
+                border: '1px solid #cbd5e1',
+                background: 'white',
+                borderRadius: 12,
+                padding: '12px 16px',
+                fontWeight: 800,
+                cursor: 'pointer',
+              }}
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
         <div
@@ -157,8 +221,17 @@ export default function ProjectsPage() {
                 boxShadow: '0 10px 25px rgba(15,23,42,0.06)',
               }}
             >
-              <div style={{ color: '#64748b', fontWeight: 700 }}>{label}</div>
-              <div style={{ fontSize: 34, fontWeight: 900, marginTop: 8 }}>
+              <div style={{ color: '#64748b', fontWeight: 700 }}>
+                {label}
+              </div>
+
+              <div
+                style={{
+                  fontSize: 34,
+                  fontWeight: 900,
+                  marginTop: 8,
+                }}
+              >
                 {value}
               </div>
             </div>
@@ -174,35 +247,22 @@ export default function ProjectsPage() {
             boxShadow: '0 10px 30px rgba(15,23,42,0.08)',
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: 12,
-              marginBottom: 18,
-            }}
-          >
-            <div>
-              <h2 style={{ margin: 0 }}>Projects</h2>
-              <p style={{ margin: '4px 0 0', color: '#64748b' }}>
-                Connected to backend API and database.
-              </p>
-            </div>
-
-            <div style={{ color: '#64748b', fontSize: 13 }}>
-              API: <b>{API_URL}</b>
-            </div>
-          </div>
-
           {loading && <div>Loading projects…</div>}
 
           {!loading && error && (
-            <div style={{ color: 'crimson', fontWeight: 800 }}>{error}</div>
+            <div style={{ color: 'crimson', fontWeight: 800 }}>
+              {error}
+            </div>
           )}
 
           {!loading && !error && (
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <table
+                style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                }}
+              >
                 <thead>
                   <tr>
                     {['Title', 'Status', 'Customer', 'Actions'].map((h) => (
@@ -227,18 +287,39 @@ export default function ProjectsPage() {
                 <tbody>
                   {projects.map((p) => {
                     const c = customerMap.get(p.customerId);
+
                     const customerLabel = c
                       ? `${c.name} (${c.email})`
                       : p.customerId;
 
                     return (
                       <tr key={p.id}>
-                        <td style={{ padding: 12, borderBottom: '1px solid #f1f5f9' }}>
-                          <div style={{ fontWeight: 900 }}>{p.title}</div>
-                          <div style={{ color: '#64748b', fontSize: 13 }}>{p.id}</div>
+                        <td
+                          style={{
+                            padding: 12,
+                            borderBottom: '1px solid #f1f5f9',
+                          }}
+                        >
+                          <div style={{ fontWeight: 900 }}>
+                            {p.title}
+                          </div>
+
+                          <div
+                            style={{
+                              color: '#64748b',
+                              fontSize: 13,
+                            }}
+                          >
+                            {p.id}
+                          </div>
                         </td>
 
-                        <td style={{ padding: 12, borderBottom: '1px solid #f1f5f9' }}>
+                        <td
+                          style={{
+                            padding: 12,
+                            borderBottom: '1px solid #f1f5f9',
+                          }}
+                        >
                           <span
                             style={{
                               ...statusStyle(p.status),
@@ -254,7 +335,12 @@ export default function ProjectsPage() {
                           </span>
                         </td>
 
-                        <td style={{ padding: 12, borderBottom: '1px solid #f1f5f9' }}>
+                        <td
+                          style={{
+                            padding: 12,
+                            borderBottom: '1px solid #f1f5f9',
+                          }}
+                        >
                           <strong>{customerLabel}</strong>
                         </td>
 
@@ -300,6 +386,7 @@ export default function ProjectsPage() {
                     <tr>
                       <td colSpan={4} style={{ padding: 18 }}>
                         <strong>No projects yet.</strong>
+
                         <div style={{ color: '#64748b' }}>
                           Click New Project to create one.
                         </div>
