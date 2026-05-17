@@ -29,12 +29,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         style={{ margin: 0 }}
       >
-        {/* NAVBAR */}
         <nav
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12,
             padding: "16px 24px",
             borderBottom: "1px solid #e2e8f0",
             background: "white",
@@ -55,21 +56,26 @@ export default function RootLayout({
             Mini-DPS
           </Link>
 
-          <div style={{ display: "flex", gap: 18 }}>
-  <Link href="/" style={linkStyle}>Home</Link>
-  <Link href="/about" style={linkStyle}>About</Link>
-  <Link href="/projects" style={linkStyle}>Projects</Link>
-  <Link href="/services" style={linkStyle}>Services</Link>
-  <Link href="/request" style={linkStyle}>Request</Link>
-  <Link href="/contact" style={linkStyle}>Contact</Link>
-
-  <Link href="/admin/projects" style={{ ...linkStyle, color: "#2563eb" }}>
-    Admin
-  </Link>
-</div>
+          <div
+            style={{
+              display: "flex",
+              gap: 14,
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
+            <Link href="/" style={linkStyle}>Home</Link>
+            <Link href="/about" style={linkStyle}>About</Link>
+            <Link href="/projects" style={linkStyle}>Projects</Link>
+            <Link href="/services" style={linkStyle}>Services</Link>
+            <Link href="/request" style={linkStyle}>Request</Link>
+            <Link href="/contact" style={linkStyle}>Contact</Link>
+            <Link href="/admin/projects" style={{ ...linkStyle, color: "#2563eb" }}>
+              Admin
+            </Link>
+          </div>
         </nav>
 
-        {/* PAGE CONTENT */}
         <main>{children}</main>
       </body>
     </html>
