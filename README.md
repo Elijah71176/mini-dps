@@ -1,104 +1,133 @@
-## Mini-DPS
+# Mini-DPS Client Portal
 
-Mini-DPS is a full-stack cloud application demonstrating modern software development practices including backend APIs, frontend UI, testing, CI, and AWS deployment.
+Mini-DPS is a full-stack cloud-native application demonstrating modern software development, DevOps, and AWS deployment practices.
 
-The project showcases how a real-world system is built, containerized, deployed to AWS, and validated through automated pipelines.
+The project simulates a real-world client portal with public portfolio pages, service request functionality, project management, and an admin dashboard connected to a live backend API and PostgreSQL database.
+
+# Features
+
+## Public Features
+
+- Home landing page
+- About page
+- Services page
+- Contact page
+- Public projects portfolio
+- Service request form
+- Mobile-friendly navigation
+
+## Admin Features
+
+- Admin login protection
+- Project dashboard
+- Create projects
+- Edit projects
+- Delete projects
+- Project statistics overview
+
+## Backend & Infrastructure
+
+- NestJS REST API
+- PostgreSQL database
+- AWS cloud deployment
+- Dockerized backend
+- CI/CD pipelines
+- Automated testing
 
 ---
 
-##  Features
+# Architecture
 
-* NestJS backend (REST API)
-* Next.js frontend (static export)
-* PostgreSQL database (AWS RDS)
-* Dockerized backend deployment (AWS EC2)
-* Static frontend hosting (AWS S3)
-* Automated testing (unit + e2e)
-* GitHub Actions CI pipeline
-
----
-
-##  Architecture
-
+```text
+Frontend (Next.js Static Export → AWS S3)
+                ↓
+Backend API (NestJS + Docker → AWS EC2)
+                ↓
+Database (PostgreSQL → AWS RDS)
 ```
-Frontend (S3 Static Hosting)
-        ↓
-Backend API (EC2 + Docker)
-        ↓
-Database (AWS RDS PostgreSQL)
-```
 
-* Frontend is deployed as static files on **Amazon S3**
-* Backend runs inside a Docker container on **Amazon EC2**
-* Database is managed by **Amazon RDS**
-* CI is handled by **GitHub Actions**
+## Infrastructure Overview
+
+- Frontend hosted on **Amazon S3 Static Website Hosting**
+- Backend deployed in Docker container on **Amazon EC2**
+- Database managed by **Amazon RDS PostgreSQL**
+- CI/CD automated using **GitHub Actions**
 
 ---
 
-##  Tech Stack
+# Tech Stack
 
-### Backend
+## Frontend
 
-* NestJS
-* TypeORM
-* PostgreSQL
-* Jest (unit & e2e)
+- Next.js
+- React
+- TypeScript
 
-### Frontend
+## Backend
 
-* Next.js (static export)
-* React
-* Jest + Testing Library
+- NestJS
+- TypeORM
+- PostgreSQL
 
-### DevOps & Cloud
+## Testing
 
-* Docker
-* AWS EC2
-* AWS S3
-* AWS RDS
-* GitHub Actions (CI)
+- Jest
+- Testing Library
+- e2e testing
+
+## DevOps & Cloud
+
+- Docker
+- AWS EC2
+- AWS S3
+- AWS RDS
+- GitHub Actions
+- CI/CD Pipelines
 
 ---
 
-##  Project Structure
+# Project Structure
 
-```
+```text
 mini-dps
  ┣ apps
- ┃ ┣ api      (NestJS backend)
- ┃ ┗ web      (Next.js frontend)
- ┣ infra      (Docker Compose for local dev)
- ┗ .github
-   ┗ workflows (CI pipeline)
+ ┃ ┣ api        → NestJS backend
+ ┃ ┗ web        → Next.js frontend
+ ┣ infra        → Docker Compose setup
+ ┣ .github
+ ┃ ┗ workflows  → CI/CD pipelines
+ ┗ README.md
 ```
 
 ---
 
-##  Run Locally (Development)
+# Run Locally
 
-### Option 1 — Docker (recommended)
+## Option 1 — Docker (Recommended)
 
 ```bash
 cd infra
 docker compose up -d
 ```
 
-Check services:
+Check running services:
 
 ```bash
 docker compose ps
 ```
 
-Access:
+Application URLs:
 
-* Frontend: http://localhost:3000
-* Backend: http://localhost:3001/health
+```text
+Frontend: http://localhost:3000
+Backend:  http://localhost:3001/health
+```
 
 ---
 
-### Option 2 — Without Docker
+## Option 2 — Without Docker
 
-Backend:
+### Backend
 
 ```bash
 cd apps/api
@@ -106,7 +135,7 @@ npm install
 npm run start:dev
 ```
 
-Frontend:
+### Frontend
 
 ```bash
 cd apps/web
@@ -116,9 +145,9 @@ npm run dev
 
 ---
 
-##  Environment Variables
+# Environment Variables
 
-Example `.env` for local development:
+Example local `.env`:
 
 ```env
 DATABASE_URL=postgresql://app:app@localhost:5432/mini_dps
@@ -128,23 +157,23 @@ NODE_ENV=development
 
 ---
 
-##  Running Tests
+# Running Tests
 
-### Backend unit tests
+## Backend Unit Tests
 
 ```bash
 cd apps/api
 npm run test
 ```
 
-### Backend e2e tests
+## Backend e2e Tests
 
 ```bash
 cd apps/api
 DATABASE_URL=postgresql://app:app@localhost:5432/mini_dps npx jest -c test/jest-e2e.json
 ```
 
-### Frontend tests
+## Frontend Tests
 
 ```bash
 cd apps/web
@@ -153,76 +182,85 @@ npm run test
 
 ---
 
-##  CI Pipeline (GitHub Actions)
+# CI/CD Pipeline
 
-On every push to `main`, CI automatically:
+GitHub Actions automatically performs:
 
-* Starts PostgreSQL service
-* Runs backend unit tests
-* Runs backend e2e tests
-* Runs frontend tests
-* Builds backend and frontend
+- Backend testing
+- Frontend testing
+- Application builds
+- CI validation
+- Deployment workflow
 
-✔️ CI status must be green before deployment
+## Deployment Flow
 
----
-
-##  Production Deployment (AWS)
-
-### Frontend
-
-* Hosted on **Amazon S3 (Static Website Hosting)**
-* Built using Next.js static export (`output: 'export'`)
-* Publicly accessible via S3 website endpoint
-
-### Backend
-
-* Deployed on **Amazon EC2**
-* Runs inside a **Docker container**
-* Exposes API on port `3001`
-
-### Database
-
-* Hosted on **Amazon RDS (PostgreSQL)**
-* Secure connection from EC2 backend
-
----
-
-## 🌐 Live Endpoints
-
-Frontend:
-
+```text
+GitHub Push
+    ↓
+GitHub Actions
+    ↓
+Frontend → AWS S3
+Backend → AWS EC2
 ```
+
+---
+
+# Production Deployment (AWS)
+
+## Frontend Deployment
+
+- Hosted on Amazon S3
+- Next.js static export
+- Public website hosting enabled
+
+## Backend Deployment
+
+- Hosted on Amazon EC2
+- Docker containerized API
+- Exposed REST API endpoints
+
+## Database
+
+- Amazon RDS PostgreSQL
+- Connected securely from backend API
+
+---
+
+# Live Endpoints
+
+## Frontend
+
+```text
 http://mini-dps-frontend-elijah.s3-website.eu-north-1.amazonaws.com/
 ```
 
-Backend API:
+## Backend API
 
-```
+```text
 http://13.60.17.29:3001
 ```
 
 ---
 
-##  Notes
+# Notes
 
-* CORS is configured to allow S3 frontend to communicate with EC2 backend
-* Dynamic routes were removed to support static hosting on S3
-* SSL is enabled only in production (RDS), disabled in CI/test
+- CORS configured between S3 frontend and EC2 backend
+- Static export used for S3 compatibility
+- Dynamic routes replaced with query-based admin edit routes
+- Admin authentication currently uses simple frontend protection
+- HTTPS can later be added using CloudFront and Route 53
 
 ---
 
-##  Release
+# Current Version
 
-Current stable version:
-
-```
+```text
 v1.0
 ```
 
 ---
 
-##  Author
+# Author
 
-Elijah
+**Elijah**  
 AWS Cloud Developer Student
